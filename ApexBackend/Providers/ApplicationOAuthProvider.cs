@@ -100,6 +100,8 @@ namespace ApexBackend.Providers
             var idLabel = "DoctorId";
             var role = "Doctor";
 
+            var secondId = 0;
+
             var id = _db.Doctors
                 .Where(r => r.UserId == userId)
                 .Select(r => r.DoctorId)
@@ -114,6 +116,11 @@ namespace ApexBackend.Providers
                     .Where(r => r.UserId == userId)
                     .Select(r => r.PatientId)
                     .FirstOrDefault();
+
+                secondId = _db.Patients
+                    .Where(r => r.UserId == userId)
+                    .Select(r => r.DoctorId)
+                    .FirstOrDefault();
             }
 
             IDictionary<string, string> data = new Dictionary<string, string>
@@ -125,6 +132,11 @@ namespace ApexBackend.Providers
             {
                 data.Add("Role", role);
                 data.Add(idLabel, id + "");
+
+                if(secondId != 0)
+                {
+                    data.Add("DoctorId", secondId + "");
+                }
             }
             else
             {
