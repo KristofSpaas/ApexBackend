@@ -13,7 +13,7 @@ namespace ApexBackend.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201512100808177_init"; }
+            get { return "201512180909112_init"; }
         }
         
         string IMigrationMetadata.Source

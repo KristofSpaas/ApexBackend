@@ -13,12 +13,14 @@ namespace ApexBackend.Models
         public int MessageId { get; set; }
 
         [Required]
-        [StringLength(100)]
-        public String MessageTitle { get; set; }
-
-        [Required]
         [StringLength(1000)]
         public String MessageContent { get; set; }
+
+        [Required]
+        public Boolean FromDoctor { get; set; }
+        
+        [Required]
+        public long DateMillis { get; set; }
 
         // Foreign key 
         [Required]
