@@ -56,6 +56,29 @@ namespace ApexBackend.Controllers
             return Ok(messagesByPatientId);
         }
 
+        // GET: api/Messages/Patient/New/5
+        [Route("api/Messages/Patient/New/{patientId}")]
+        public IHttpActionResult GetNewMessagesByPatientId(int patientId)
+        {
+            Patient patient = db.Patients.Find(patientId);
+            if (patient == null)
+            {
+                return BadRequest("Patient with id " + patientId + " does not exist.");
+            }
+
+            List<Message> newMessagesByPatientId = db.Messages.Where(r => r.PatientId == patientId && r.Seen == false).ToList();
+
+            foreach(Message message in newMessagesByPatientId)
+            {
+                message.Seen = true;
+                db.Entry(message).State = EntityState.Modified;
+            }          
+
+            db.SaveChanges();
+
+            return Ok(newMessagesByPatientId);
+        }
+
         // PUT: api/Messages/5
         [Route("api/Messages/{id}")]
         [ResponseType(typeof (void))]

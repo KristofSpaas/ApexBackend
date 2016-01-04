@@ -18,7 +18,10 @@ namespace ApexBackend.Models
 
         [Required]
         public Boolean FromDoctor { get; set; }
-        
+
+        [Required]
+        public Boolean Seen { get; set; }
+
         [Required]
         public long DateMillis { get; set; }
 
