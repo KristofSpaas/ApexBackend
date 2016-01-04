@@ -60,6 +60,18 @@ namespace ApexBackend.Controllers
                 return BadRequest("Patient with id " + temperature.PatientId + " does not exist.");
             }
 
+            var lastRecord = db.Temperatures
+               .OrderByDescending(p => p.TemperatureId)
+               .FirstOrDefault();
+
+            if (lastRecord != null)
+            {
+                if (lastRecord.DateMillis == temperature.DateMillis)
+                {
+                    return BadRequest("Record already exists");
+                }
+            }
+
             db.Temperatures.Add(temperature);
             db.SaveChanges();
 

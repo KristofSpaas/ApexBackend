@@ -27,7 +27,7 @@ namespace ApexBackend.Controllers
             db = context;
         }
 
-    // GET: api/HeartRates/Patient/5
+        // GET: api/HeartRates/Patient/5
         [Authorize(Roles = "Doctor, Patient")]
         [Route("api/HeartRates/Patient/{patientId}")]
         public IHttpActionResult GetHeartRatesByPatientId(int patientId)
@@ -58,6 +58,18 @@ namespace ApexBackend.Controllers
             if (patient == null)
             {
                 return BadRequest("Patient with id " + heartRate.PatientId + " does not exist.");
+            }
+
+            var lastRecord = db.HeartRates
+               .OrderByDescending(p => p.HeartRateId)
+               .FirstOrDefault();
+
+            if (lastRecord != null)
+            {
+                if (lastRecord.DateMillis == heartRate.DateMillis)
+                {
+                    return BadRequest("Record already exists");
+                }
             }
 
             db.HeartRates.Add(heartRate);
