@@ -53,6 +53,12 @@ namespace ApexBackend.Controllers
 
             List<Message> messagesByPatientId = db.Messages.Where(r => r.PatientId == patientId).ToList();
 
+            foreach (Message message in messagesByPatientId)
+            {
+                message.Patient = null;
+                message.Doctor = new Doctor();
+            }
+
             return Ok(messagesByPatientId);
         }
 
@@ -75,6 +81,12 @@ namespace ApexBackend.Controllers
             }          
 
             db.SaveChanges();
+
+            foreach (Message message in newMessagesByPatientId)
+            {
+                message.Patient = null;
+                message.Doctor = new Doctor();
+            }
 
             return Ok(newMessagesByPatientId);
         }
@@ -124,6 +136,9 @@ namespace ApexBackend.Controllers
                 }
             }
 
+            message.Doctor = new Doctor();
+            message.Patient = null;
+
             return CreatedAtRoute("DefaultApi", new {controller = "messages", id = message.MessageId}, message);
         }
 
@@ -151,6 +166,9 @@ namespace ApexBackend.Controllers
 
             db.Messages.Add(message);
             db.SaveChanges();
+
+            message.Doctor = new Doctor();
+            message.Patient = null;
 
             return CreatedAtRoute("DefaultApi", new {controller = "messages", id = message.MessageId}, message);
         }

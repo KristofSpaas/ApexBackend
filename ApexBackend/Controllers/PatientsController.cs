@@ -28,10 +28,10 @@ namespace ApexBackend.Controllers
         }
 
         // GET: api/Patients
-        public List<Patient> GetPatients()
-        {
-            return db.Patients.ToList();
-        }
+        //public List<Patient> GetPatients()
+        //{
+        //  return db.Patients.ToList();
+        //}
 
         // GET: api/Patients/Doctor/5
         [Route("api/Patients/Doctor/{doctorId}")]
@@ -44,6 +44,12 @@ namespace ApexBackend.Controllers
             }
 
             List<Patient> patientsByDoctorId = db.Patients.Where(r => r.DoctorId == doctorId).ToList();
+
+            foreach (Patient patient in patientsByDoctorId)
+            {
+                patient.Doctor = new Doctor();
+                patient.User = new ApplicationUser();
+            }
 
             return Ok(patientsByDoctorId);
         }

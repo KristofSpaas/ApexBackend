@@ -40,6 +40,11 @@ namespace ApexBackend.Controllers
 
             List<StepsPerDay> stepsPerDaysByPatientId = db.StepsPerDays.Where(r => r.PatientId == patientId).ToList();
 
+            foreach (StepsPerDay steps in stepsPerDaysByPatientId)
+            {
+                steps.Patient = null;
+            }
+
             return Ok(stepsPerDaysByPatientId);
         }
 
@@ -83,6 +88,8 @@ namespace ApexBackend.Controllers
                 }
             }
 
+            stepsPerDays.Patient = null;
+
             return CreatedAtRoute("DefaultApi", new {controller = "stepsperdays", id = stepsPerDays.StepsPerDayId},
                 stepsPerDays);
         }
@@ -106,6 +113,8 @@ namespace ApexBackend.Controllers
 
             db.StepsPerDays.Add(stepsPerDay);
             db.SaveChanges();
+
+            stepsPerDay.Patient = null;
 
             return CreatedAtRoute("DefaultApi", new {controller = "stepsperdays", id = stepsPerDay.StepsPerDayId},
                 stepsPerDay);

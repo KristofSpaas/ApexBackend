@@ -55,6 +55,11 @@ namespace ApexBackend.Controllers
 
             List<Advice> advicesByPatientId = db.Advices.Where(r => r.PatientId == patientId).ToList();
 
+            foreach (Advice advice in advicesByPatientId)
+            {
+                advice.Patient = null;
+            }
+
             return Ok(advicesByPatientId);
         }
 
@@ -98,6 +103,8 @@ namespace ApexBackend.Controllers
                 }
             }
 
+            advice.Patient = null;
+
             return CreatedAtRoute("DefaultApi", new {controller = "advices", id = advice.AdviceId}, advice);
         }
 
@@ -120,6 +127,8 @@ namespace ApexBackend.Controllers
 
             db.Advices.Add(advice);
             db.SaveChanges();
+
+            advice.Patient = null;
 
             return CreatedAtRoute("DefaultApi", new {controller = "advices", id = advice.AdviceId}, advice);
         }

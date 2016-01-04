@@ -40,6 +40,11 @@ namespace ApexBackend.Controllers
 
             List<Temperature> temperaturesByPatientId = db.Temperatures.Where(r => r.PatientId == patientId).ToList();
 
+            foreach (Temperature temperature in temperaturesByPatientId)
+            {
+                temperature.Patient = null;
+            }
+
             return Ok(temperaturesByPatientId);
         }
 
@@ -74,6 +79,8 @@ namespace ApexBackend.Controllers
 
             db.Temperatures.Add(temperature);
             db.SaveChanges();
+
+            temperature.Patient = null;
 
             return CreatedAtRoute("DefaultApi", new {controller = "temperatures", id = temperature.TemperatureId},
                 temperature);

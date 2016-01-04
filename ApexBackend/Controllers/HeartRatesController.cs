@@ -40,6 +40,11 @@ namespace ApexBackend.Controllers
 
             List<HeartRate> heartRatesByPatientId = db.HeartRates.Where(r => r.PatientId == patientId).ToList();
 
+            foreach (HeartRate heartRate in heartRatesByPatientId)
+            {
+                heartRate.Patient = null;
+            }
+
             return Ok(heartRatesByPatientId);
         }
 
@@ -74,6 +79,8 @@ namespace ApexBackend.Controllers
 
             db.HeartRates.Add(heartRate);
             db.SaveChanges();
+
+            heartRate.Patient = null;
 
             return CreatedAtRoute("DefaultApi", new {controller = "heartrates", id = heartRate.HeartRateId}, heartRate);
         }
