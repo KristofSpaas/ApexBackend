@@ -27,11 +27,25 @@ namespace ApexBackend.Controllers
             db = context;
         }
 
-        // GET: api/Patients
-        //public List<Patient> GetPatients()
-        //{
-        //  return db.Patients.ToList();
-        //}
+        // GET: api/Patients/5
+        [ResponseType(typeof(Patient))]
+        [Authorize(Roles = "Doctor")]
+        [Route("api/Patients/{id}")]
+        public IHttpActionResult GetPatient(int id)
+        {
+            Patient patient = db.Patients.Find(id);
+
+            if (patient == null)
+            {
+                return BadRequest("Patient with id " + id + " does not exist.");
+            }
+
+            ApplicationUser user = new ApplicationUser();
+            user.UserName = patient.User.UserName;
+            patient.User = user;
+
+            return Ok(patient);
+        }
 
         // GET: api/Patients/Doctor/5
         [Route("api/Patients/Doctor/{doctorId}")]
@@ -48,7 +62,10 @@ namespace ApexBackend.Controllers
             foreach (Patient patient in patientsByDoctorId)
             {
                 patient.Doctor = new Doctor();
-                patient.User = new ApplicationUser();
+
+                ApplicationUser user = new ApplicationUser();
+                user.UserName = patient.User.UserName;
+                patient.User = user;
             }
 
             return Ok(patientsByDoctorId);

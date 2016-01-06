@@ -30,7 +30,16 @@ namespace ApexBackend.Controllers
         // GET: api/Doctors
         public List<Doctor> GetDoctors()
         {
-            return db.Doctors.ToList();
+            List<Doctor> doctors = db.Doctors.ToList();
+
+            foreach (Doctor doctor in doctors)
+            {
+                ApplicationUser user = new ApplicationUser();
+                user.UserName = doctor.User.UserName;
+                doctor.User = user;
+            }
+
+            return doctors;
         }
 
         // GET: api/Doctors/5
@@ -42,6 +51,10 @@ namespace ApexBackend.Controllers
             {
                 return BadRequest("Doctor with id " + id + " does not exist.");
             }
+
+            ApplicationUser user = new ApplicationUser();
+            user.UserName = doctor.User.UserName;
+            doctor.User = user;
 
             return Ok(doctor);
         }
@@ -82,6 +95,10 @@ namespace ApexBackend.Controllers
             db.Entry(user).State = EntityState.Modified;
 
             db.SaveChanges();
+
+            ApplicationUser newUser = new ApplicationUser();
+            newUser.UserName = model.Email;
+            doctor.User = newUser;
 
             return CreatedAtRoute("DefaultApi", new {id = doctor.DoctorId},
                 doctor);
