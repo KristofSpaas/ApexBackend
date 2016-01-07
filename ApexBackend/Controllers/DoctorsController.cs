@@ -85,6 +85,16 @@ namespace ApexBackend.Controllers
                 return BadRequest("User with id " + doctor.UserId + " does not exist.");
             }
 
+            var stubUser = db.Users.Where(r => r.Email == model.Email).FirstOrDefault();
+
+            if (stubUser != null)
+            {
+                if (user.Id != stubUser.Id)
+                {
+                    return BadRequest("Email address " + model.Email + " is taken.");
+                }
+            }
+
             doctor.FirstName = model.FirstName;
             doctor.LastName = model.LastName;
 
