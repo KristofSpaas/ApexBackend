@@ -103,6 +103,13 @@ namespace ApexBackend.Models
         public string ConfirmPassword { get; set; }
     }
 
+    public class ForgotPasswordModel
+    {
+        [Required]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+    }
+
 
     public class RegisterExternalBindingModel
     {
@@ -122,8 +129,16 @@ namespace ApexBackend.Models
         public string ProviderKey { get; set; }
     }
 
-    public class SetPasswordBindingModel
+    public class ResetPasswordBindingModel
     {
+        [Required]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        [Required]
+        [Display(Name = "Token")]
+        public string Token { get; set; }        
+
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]

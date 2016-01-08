@@ -17,6 +17,8 @@ using Microsoft.Owin.Security.OAuth;
 using ApexBackend.Models;
 using ApexBackend.Providers;
 using ApexBackend.Results;
+using System.Net.Mail;
+using System.Text;
 
 namespace ApexBackend.Controllers
 {
@@ -185,7 +187,73 @@ namespace ApexBackend.Controllers
 
             return Ok();
         }
-        
+
+        // POST: api/Account/ForgotPassword
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("ForgotPassword")]
+        public async Task<IHttpActionResult> ForgotPassword(ForgotPasswordModel model)
+        {
+            var user = await UserManager.FindByNameAsync(model.Email);
+            if (user == null)
+            {
+                return BadRequest("User with email " + model.Email + " does not exist.");
+            }
+
+            string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+
+            // Command line argument must the the SMTP host.
+            SmtpClient client = new SmtpClient();
+            client.Port = 587;
+            client.Host = "smtp.gmail.com";
+            client.EnableSsl = true;
+            client.Timeout = 10000;
+            client.DeliveryMethod = SmtpDeliveryMethod.Network;
+            client.UseDefaultCredentials = false;
+            client.Credentials = new System.Net.NetworkCredential("apexrd.health@gmail.com", "thisismypass");
+
+            MailMessage mm = new MailMessage("noreply@apex.com", model.Email, "Reset Password",
+                "You can reset your password by clicking <a href=\"http://localhost:8080/webdashboard/#/setPassword\"> here </a>."
+                + "Please copy the following token and enter it while resetting your password: " + code);
+            mm.BodyEncoding = UTF8Encoding.UTF8;
+            mm.IsBodyHtml = true;
+            mm.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
+
+            client.Send(mm);
+
+            return Ok("A mail has been sent to " + model.Email);
+        }
+
+        // POST api/Account/SetPassword
+        [HttpPost]
+        [AllowAnonymous]
+        [Route("SetPassword")]
+        public async Task<IHttpActionResult> SetPassword(ResetPasswordBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var token = model.Token.Replace(" ", "+");
+
+            var user = await UserManager.FindByNameAsync(model.Email);
+            if (user == null)
+            {
+                return BadRequest("User with email " + model.Email + " does not exist.");
+            }
+
+            IdentityResult result = await UserManager.ResetPasswordAsync(user.Id, token,
+            model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest("Resetting password failed.");
+            }
+
+            return Ok("Password has been reset");
+        }
+
         //        // DELETE: api/Account/5
         //        [ResponseType(typeof (IdentityUser))]
         //        [Authorize(Roles = "Admin")]
@@ -257,25 +325,6 @@ namespace ApexBackend.Controllers
         //                Logins = logins,
         //                ExternalLoginProviders = GetExternalLogins(returnUrl, generateState)
         //            };
-        //        }
-
-        //        // POST api/Account/SetPassword
-        //        [Route("SetPassword")]
-        //        public async Task<IHttpActionResult> SetPassword(SetPasswordBindingModel model)
-        //        {
-        //            if (!ModelState.IsValid)
-        //            {
-        //                return BadRequest(ModelState);
-        //            }
-        //
-        //            IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
-        //
-        //            if (!result.Succeeded)
-        //            {
-        //                return GetErrorResult(result);
-        //            }
-        //
-        //            return Ok();
         //        }
         //
         //        // POST api/Account/AddExternalLogin
