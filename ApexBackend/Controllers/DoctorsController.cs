@@ -43,6 +43,7 @@ namespace ApexBackend.Controllers
         }
 
         // GET: api/Doctors/5
+        [Authorize(Roles = "Doctor")]
         [ResponseType(typeof (Doctor))]
         public IHttpActionResult GetDoctor(int id)
         {
@@ -61,6 +62,7 @@ namespace ApexBackend.Controllers
 
         // PUT: api/Doctors/5
         [ResponseType(typeof (void))]
+        [Authorize(Roles = "Doctor")]
         public IHttpActionResult PutDoctor(int id, EditDoctorBindingModel model)
         {
             if (!ModelState.IsValid)
