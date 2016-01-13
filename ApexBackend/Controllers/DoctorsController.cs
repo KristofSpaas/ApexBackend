@@ -12,7 +12,7 @@ using ApexBackend.Models;
 
 namespace ApexBackend.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Doctor")]
     public class DoctorsController : ApiController
     {
         private ApplicationDbContext db;
@@ -28,6 +28,7 @@ namespace ApexBackend.Controllers
         }
 
         // GET: api/Doctors
+        [Authorize(Roles = "Admin")]
         public List<Doctor> GetDoctors()
         {
             List<Doctor> doctors = db.Doctors.ToList();
@@ -43,7 +44,7 @@ namespace ApexBackend.Controllers
         }
 
         // GET: api/Doctors/5
-        [Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Admin, Doctor")]
         [ResponseType(typeof (Doctor))]
         public IHttpActionResult GetDoctor(int id)
         {
@@ -62,7 +63,7 @@ namespace ApexBackend.Controllers
 
         // PUT: api/Doctors/5
         [ResponseType(typeof (void))]
-        [Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Admin, Doctor")]
         public IHttpActionResult PutDoctor(int id, EditDoctorBindingModel model)
         {
             if (!ModelState.IsValid)
@@ -118,6 +119,7 @@ namespace ApexBackend.Controllers
 
         // DELETE: api/Doctors/5
         [ResponseType(typeof (Doctor))]
+        [Authorize(Roles = "Admin")]
         public IHttpActionResult DeleteDoctor(int id)
         {
             Doctor doctor = db.Doctors.Find(id);

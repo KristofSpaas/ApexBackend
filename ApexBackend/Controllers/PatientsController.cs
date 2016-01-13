@@ -29,7 +29,6 @@ namespace ApexBackend.Controllers
 
         // GET: api/Patients/5
         [ResponseType(typeof(Patient))]
-        [Authorize(Roles = "Doctor")]
         [Route("api/Patients/{id}")]
         public IHttpActionResult GetPatient(int id)
         {
