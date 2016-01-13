@@ -48,6 +48,31 @@ namespace ApexBackend.Controllers
             return Ok(temperaturesByPatientId);
         }
 
+        // GET: api/Temperatures/Patient/5/13334262668
+        [Authorize(Roles = "Doctor, Patient")]
+        [Route("api/Temperatures/Patient/{patientId}/{dateMillis}")]
+        public IHttpActionResult GetTemperaturesOfDayByPatientId(int patientId, long dateMillis)
+        {
+            Patient patient = db.Patients.Find(patientId);
+            if (patient == null)
+            {
+                return BadRequest("Patient with id " + patientId + " does not exist.");
+            }
+
+            var beginDate = GetStartOfDay(dateMillis);
+            var endDate = GetEndOfDay(dateMillis);
+
+            List<Temperature> temperaturesByPatientId = db.Temperatures.Where(
+                r => r.PatientId == patientId && r.DateMillis > beginDate && r.DateMillis < endDate).ToList();
+
+            foreach (Temperature temperature in temperaturesByPatientId)
+            {
+                temperature.Patient = null;
+            }
+
+            return Ok(temperaturesByPatientId);
+        }
+
         // POST: api/Temperatures
         [Authorize(Roles = "Patient")]
         [Route("api/Temperatures")]
@@ -93,6 +118,30 @@ namespace ApexBackend.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private long GetStartOfDay(long dateMillis)
+        {
+            var date = new DateTime((dateMillis * 10000) + 621355968000000000);
+            var beginDate = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+
+            var begin = beginDate.AddDays(1);
+
+            var beginMillis = (long)(begin - new DateTime(1970, 1, 1)).TotalMilliseconds;
+
+            return beginMillis;
+        }
+
+        private long GetEndOfDay(long dateMillis)
+        {
+            var date = new DateTime((dateMillis * 10000) + 621355968000000000);
+            var beginDate = new DateTime(date.Year, date.Month, date.Day, 0, 0, 0);
+
+            var endDate = beginDate.AddDays(2);
+
+            var endMillis = (long)(endDate - new DateTime(1970, 1, 1)).TotalMilliseconds;
+
+            return endMillis;
         }
     }
 }
