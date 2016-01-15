@@ -92,7 +92,7 @@ namespace ApexBackend.Controllers
         }
 
         // GET: api/Messages/Patient/NewForDoctor/5
-        [Route("api/Messages/Patient/New/{patientId}")]
+        [Route("api/Messages/Patient/NewForDoctor/{patientId}")]
         public IHttpActionResult GetNewMessagesForDoctorByPatientId(int patientId)
         {
             Patient patient = db.Patients.Find(patientId);
