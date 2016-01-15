@@ -219,6 +219,7 @@
     <Compile Include="Controllers\HeartRatesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
+    <Compile Include="Controllers\MoodRatingsController.cs" />
     <Compile Include="Controllers\PatientsController.cs" />
     <Compile Include="Controllers\StepsPerDaysController.cs" />
     <Compile Include="Controllers\TemperaturesController.cs" />
@@ -237,6 +238,14 @@
     <Compile Include="Migrations\201601061618262_version3.Designer.cs">
       <DependentUpon>201601061618262_version3.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201601150751317_version4.cs" />
+    <Compile Include="Migrations\201601150751317_version4.Designer.cs">
+      <DependentUpon>201601150751317_version4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201601150754043_version5.cs" />
+    <Compile Include="Migrations\201601150754043_version5.Designer.cs">
+      <DependentUpon>201601150754043_version5.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -248,6 +257,7 @@
     <Compile Include="Models\HeartRate.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\MoodRating.cs" />
     <Compile Include="Models\Patient.cs" />
     <Compile Include="Models\StepsPerDay.cs" />
     <Compile Include="Models\Temperature.cs" />
@@ -331,6 +341,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201601061618262_version3.resx">
       <DependentUpon>201601061618262_version3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601150751317_version4.resx">
+      <DependentUpon>201601150751317_version4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201601150754043_version5.resx">
+      <DependentUpon>201601150754043_version5.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

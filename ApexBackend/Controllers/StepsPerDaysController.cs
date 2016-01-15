@@ -51,7 +51,7 @@ namespace ApexBackend.Controllers
         // GET: api/StepsPerDays/Patient/5/13334262668
         [Authorize(Roles = "Doctor, Patient")]
         [Route("api/StepsPerDays/Patient/{patientId}/{dateMillis}")]
-        public IHttpActionResult GetStepsPerDaysOfDayByPatientId(int patientId, long dateMillis)
+        public IHttpActionResult GetStepsPerDaysOfMonthByPatientId(int patientId, long dateMillis)
         {
             Patient patient = db.Patients.Find(patientId);
             if (patient == null)

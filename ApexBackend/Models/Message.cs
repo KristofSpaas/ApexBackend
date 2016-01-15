@@ -23,6 +23,9 @@ namespace ApexBackend.Models
         public Boolean Seen { get; set; }
 
         [Required]
+        public Boolean SeenByDoctor { get; set; }
+
+        [Required]
         public long DateMillis { get; set; }
 
         // Foreign key 

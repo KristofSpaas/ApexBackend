@@ -40,5 +40,6 @@ namespace ApexBackend.Models
         public virtual System.Data.Entity.DbSet<EmergencyCall> EmergencyCalls { get; set; }
         public virtual System.Data.Entity.DbSet<Message> Messages { get; set; }
         public virtual System.Data.Entity.DbSet<Advice> Advices { get; set; }
+        public virtual System.Data.Entity.DbSet<MoodRating> MoodRatings { get; set; }
     }
 }

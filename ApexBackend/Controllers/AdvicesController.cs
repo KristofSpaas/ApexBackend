@@ -63,6 +63,39 @@ namespace ApexBackend.Controllers
             return Ok(advicesByPatientId);
         }
 
+        // GET: api/Advices/Doctor/5
+        [Authorize(Roles = "Doctor")]
+        [Route("api/Advices/Doctor/{doctorId}")]
+        public IHttpActionResult GetAdvicesByDoctorId(int doctorId)
+        {
+            Doctor doctor = db.Doctors.Find(doctorId);
+            if (doctor == null)
+            {
+                return BadRequest("Doctor with id " + doctorId + " does not exist.");
+            }
+
+            List<Patient> patientsByDoctorId = db.Patients.Where(r => r.DoctorId == doctorId).ToList();
+
+            List<Advice> advicesByDoctorId = new List<Advice>();
+
+            foreach (Patient patient in patientsByDoctorId)
+            {
+                List<Advice> advicesByPatientId = db.Advices.Where(r => r.PatientId == patient.PatientId).ToList();
+
+                foreach (Advice advice in advicesByPatientId)
+                {
+                    advicesByDoctorId.Add(advice);
+                }
+            }
+
+            foreach (Advice advice in advicesByDoctorId)
+            {
+                advice.Patient = null;
+            }
+
+            return Ok(advicesByDoctorId);
+        }
+
         // PUT: api/Advices/5
         [Authorize(Roles = "Doctor")]
         [Route("api/Advices/{id}")]
