@@ -194,9 +194,8 @@ namespace ApexBackend.Controllers
             return CreatedAtRoute("DefaultApi", new {controller = "messages", id = message.MessageId}, message);
         }
 
-        // GET: api/Messages/patient/seenByDoctor/5
+        // POST: api/Messages/patient/seenByDoctor/5
         [Route("api/Messages/patient/seenByDoctor/{patientId}")]
-        [ResponseType(typeof(Message))]
         public IHttpActionResult SetMessagesSeenByDoctorByPatientId(int patientId)
         {
             Patient patient = db.Patients.Find(patientId);
