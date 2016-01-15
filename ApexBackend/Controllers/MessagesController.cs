@@ -105,14 +105,6 @@ namespace ApexBackend.Controllers
 
             foreach (Message message in newMessagesByPatientId)
             {
-                message.SeenByDoctor = true;
-                db.Entry(message).State = EntityState.Modified;
-            }
-
-            db.SaveChanges();
-
-            foreach (Message message in newMessagesByPatientId)
-            {
                 message.Patient = null;
                 message.Doctor = new Doctor();
             }
@@ -200,6 +192,30 @@ namespace ApexBackend.Controllers
             message.Patient = null;
 
             return CreatedAtRoute("DefaultApi", new {controller = "messages", id = message.MessageId}, message);
+        }
+
+        // GET: api/Messages/patient/seenByDoctor/5
+        [Route("api/Messages/patient/seenByDoctor/{patientId}")]
+        [ResponseType(typeof(Message))]
+        public IHttpActionResult SetMessagesSeenByDoctorByPatientId(int patientId)
+        {
+            Patient patient = db.Patients.Find(patientId);
+            if (patient == null)
+            {
+                return BadRequest("Patient with id " + patientId + " does not exist.");
+            }
+
+            List<Message> newMessagesByPatientId = db.Messages.Where(r => r.PatientId == patientId && r.SeenByDoctor == false).ToList();
+
+            foreach (Message message in newMessagesByPatientId)
+            {
+                message.SeenByDoctor = true;
+                db.Entry(message).State = EntityState.Modified;
+            }
+
+            db.SaveChanges();
+
+            return Ok();
         }
 
         // DELETE: api/Messages/5
