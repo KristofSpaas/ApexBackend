@@ -90,18 +90,6 @@ namespace ApexBackend.Controllers
                 return BadRequest("Patient with id " + heartRate.PatientId + " does not exist.");
             }
 
-            var lastRecord = db.HeartRates
-               .OrderByDescending(p => p.HeartRateId)
-               .FirstOrDefault();
-
-            if (lastRecord != null)
-            {
-                if (lastRecord.DateMillis == heartRate.DateMillis)
-                {
-                    return BadRequest("Record already exists");
-                }
-            }
-
             db.HeartRates.Add(heartRate);
             db.SaveChanges();
 
