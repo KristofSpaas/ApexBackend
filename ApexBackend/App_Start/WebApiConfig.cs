@@ -13,8 +13,8 @@ namespace ApexBackend
     {
         public static void Register(HttpConfiguration config)
         {
-            var corsAttr = new EnableCorsAttribute("*", "*", "*");
-            config.EnableCors(corsAttr);
+            // var corsAttr = new EnableCorsAttribute("*", "*", "*");
+            // config.EnableCors(corsAttr);
 
             // Web API configuration and services
             // Configure Web API to use only bearer token authentication.
