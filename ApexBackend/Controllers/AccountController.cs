@@ -19,6 +19,7 @@ using ApexBackend.Providers;
 using ApexBackend.Results;
 using System.Net.Mail;
 using System.Text;
+using System.Web.Security;
 
 namespace ApexBackend.Controllers
 {
@@ -61,6 +62,56 @@ namespace ApexBackend.Controllers
         public List<ApplicationUser> GetUsers()
         {
             return db.Users.ToList();
+        }
+
+        // GET: api/Account/GetAdminEmail
+        [Route("GetAdminEmail")]
+        [Authorize(Roles = "Admin, Doctor")]
+        public String GetAdminEmail()
+        {
+            var roleAdmin = db.Roles.Where(r => r.Name == "Admin").FirstOrDefault();
+
+            var admin = db.Users
+                .Where(x => x.Roles.Select(y => y.RoleId).Contains(roleAdmin.Id))
+                .FirstOrDefault();
+
+            return admin.Email;
+        }
+
+        // POST: api/Account/EditAdminEmail
+        [Route("EditAdminEmail")]
+        [Authorize(Roles = "Admin")]
+        public IHttpActionResult EditAdminEmail(EditAdminEmailBindingModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var roleAdmin = db.Roles.Where(r => r.Name == "Admin").FirstOrDefault();
+
+            ApplicationUser admin = db.Users
+                .Where(x => x.Roles.Select(y => y.RoleId).Contains(roleAdmin.Id))
+                .FirstOrDefault();
+
+            var stubUser = db.Users.Where(r => r.Email == model.Email).FirstOrDefault();
+
+            if (stubUser != null)
+            {
+                if (admin.Id != stubUser.Id)
+                {
+                    return BadRequest("Email address " + model.Email + " is taken.");
+                }
+            }
+
+            admin.Email = model.Email;
+            admin.UserName = model.Email;
+
+            db.Entry(admin).State = System.Data.Entity.EntityState.Modified;
+
+            db.SaveChanges();
+
+            return Ok();
         }
 
         // POST api/Account/Logout
@@ -213,8 +264,7 @@ namespace ApexBackend.Controllers
             client.Credentials = new System.Net.NetworkCredential("apexrd.health@gmail.com", "thisismypass");
 
             MailMessage mm = new MailMessage("noreply@apex.com", model.Email, "Reset Password",
-                "You can reset your password by clicking <a href=\"http://localhost:8080/webdashboard/#/setPassword\"> here </a>."
-                + "Please copy the following token and enter it while resetting your password: " + code);
+                "<div style='padding - top: 2 %; padding - bottom: 2 %; text - align: center; font - size: 62px; font - weight: 900; background - color: rgb(129, 129, 129); color: white'>   APEX HEALTH</div><div style = 'text-align: center;'>     <div style = 'width: 60%; margin-left: 20%; margin-right: 20%; text-align: left; font-size: 30px; font-weight: 600'>          <p>              You can reset your password by clicking <a href =\'http://localhost:8080/webdashboard/#/setPassword\'>here</a>.</p><p>Please copy the following token and enter it while resetting your password: <span style = 'color: #ac273e'>" + code + "</span>             </p>         </div>     </div>");
             mm.BodyEncoding = UTF8Encoding.UTF8;
             mm.IsBodyHtml = true;
             mm.DeliveryNotificationOptions = DeliveryNotificationOptions.OnFailure;
